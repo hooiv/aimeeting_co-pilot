@@ -1,0 +1,128 @@
+{
+  "name": "ai-meeting-copilot",
+  "version": "2.0.0",
+  "description": "Enterprise-grade AI-powered meeting platform with real-time transcription, advanced insights, and comprehensive integrations",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install:client && npm run install:server",
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && npm install",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "cd client && npm start",
+    "dev:server": "cd server && npm run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "start": "cd server && npm start",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "cd client && npm test",
+    "test:server": "cd server && npm test",
+    "test:coverage": "npm run test:coverage:client && npm run test:coverage:server",
+    "test:coverage:client": "cd client && npm run test:coverage",
+    "test:coverage:server": "cd server && npm run test:coverage",
+    "test:e2e": "cd client && npm run test:e2e",
+    "lint": "npm run lint:client && npm run lint:server",
+    "lint:client": "cd client && npm run lint",
+    "lint:server": "cd server && npm run lint",
+    "lint:fix": "npm run lint:fix:client && npm run lint:fix:server",
+    "lint:fix:client": "cd client && npm run lint:fix",
+    "lint:fix:server": "cd server && npm run lint:fix",
+    "format": "npm run format:client && npm run format:server",
+    "format:client": "cd client && npm run format",
+    "format:server": "cd server && npm run format",
+    "docker:build": "docker build -t ai-meeting-copilot .",
+    "docker:run": "docker run -p 5000:5000 ai-meeting-copilot",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:prod": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "k8s:deploy": "kubectl apply -f k8s/",
+    "k8s:delete": "kubectl delete -f k8s/",
+    "migrate": "cd server && npm run migrate",
+    "migrate:rollback": "cd server && npm run migrate:rollback",
+    "seed": "cd server && npm run seed",
+    "clean": "npm run clean:client && npm run clean:server",
+    "clean:client": "cd client && rm -rf build node_modules",
+    "clean:server": "cd server && rm -rf dist node_modules",
+    "clean:all": "npm run clean && rm -rf node_modules",
+    "postinstall": "echo 'Skipping husky install for now'",
+    "prepare": "echo 'Skipping husky install for now'",
+    "release": "standard-version",
+    "release:major": "standard-version --release-as major",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch"
+  },
+  "keywords": [
+    "ai",
+    "meeting",
+    "transcription",
+    "collaboration",
+    "webrtc",
+    "real-time",
+    "typescript",
+    "react",
+    "nodejs",
+    "enterprise"
+  ],
+  "author": {
+    "name": "AI Meeting Co-Pilot Team",
+    "email": "team@ai-meeting-copilot.com",
+    "url": "https://ai-meeting-copilot.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/ai-meeting-copilot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/username/ai-meeting-copilot/issues"
+  },
+  "homepage": "https://ai-meeting-copilot.com",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-keywords": "^5.1.0",
+    "p5": "^2.0.2",
+    "react-p5": "^1.4.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "standard-version": "^9.5.0"
+  },
+  "lint-staged": {
+    "client/src/**/*.{js,jsx,ts,tsx}": [
+      "cd client && npm run lint:fix",
+      "cd client && npm run format"
+    ],
+    "server/src/**/*.{js,ts}": [
+      "cd server && npm run lint:fix",
+      "cd server && npm run format"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "standard-version": {
+    "scripts": {
+      "prebump": "npm run test && npm run build",
+      "postbump": "npm run docker:build"
+    }
+  }
+}

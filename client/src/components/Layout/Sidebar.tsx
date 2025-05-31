@@ -19,6 +19,7 @@ import {
   History,
   Analytics,
   Settings,
+  Integration,
   Help,
   Person,
   ExpandLess,
@@ -97,6 +98,13 @@ const Sidebar: React.FC = () => {
       icon: <SmartToy />,
       path: '/ai-insights',
     },
+    {
+      id: 'integrations',
+      label: 'Integrations',
+      icon: <Integration />,
+      path: '/integrations',
+      badge: 'Enterprise',
+    },
   ];
 
   const settingsItems: NavigationItem[] = [
@@ -117,12 +125,6 @@ const Sidebar: React.FC = () => {
           label: 'General',
           icon: <Settings />,
           path: '/settings/general',
-        },
-        {
-          id: 'integrations',
-          label: 'Integrations',
-          icon: <Extension />,
-          path: '/settings/integrations',
         },
         {
           id: 'security',

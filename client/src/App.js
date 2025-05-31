@@ -18,6 +18,11 @@ import Dashboard from './pages/Dashboard.tsx';
 import MeetingRoom from './pages/MeetingRoom.tsx';
 import MeetingHistory from './pages/MeetingHistory.tsx';
 import Analytics from './pages/Analytics.tsx';
+import AIInsights from './pages/AIInsights.tsx';
+import Recordings from './pages/Recordings.tsx';
+import ScheduleMeeting from './pages/ScheduleMeeting.tsx';
+import Help from './pages/Help.tsx';
+import Integrations from './pages/Integrations.tsx';
 import Settings from './pages/Settings.tsx';
 import Profile from './pages/Profile.tsx';
 import Login from './pages/Login.tsx';
@@ -138,6 +143,22 @@ const AppContent = () => {
                   }
                 />
                 <Route
+                  path="/meetings/schedule"
+                  element={
+                    <ProtectedRoute>
+                      <ScheduleMeeting />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/meetings/history"
+                  element={
+                    <ProtectedRoute>
+                      <MeetingHistory />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/analytics"
                   element={
                     <ProtectedRoute>
@@ -146,10 +167,50 @@ const AppContent = () => {
                   }
                 />
                 <Route
+                  path="/ai-insights"
+                  element={
+                    <ProtectedRoute>
+                      <AIInsights />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/recordings"
+                  element={
+                    <ProtectedRoute>
+                      <Recordings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/meetings/recordings"
+                  element={
+                    <ProtectedRoute>
+                      <Recordings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/settings"
                   element={
                     <ProtectedRoute>
                       <Settings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/integrations"
+                  element={
+                    <ProtectedRoute>
+                      <Integrations />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/help"
+                  element={
+                    <ProtectedRoute>
+                      <Help />
                     </ProtectedRoute>
                   }
                 />

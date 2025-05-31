@@ -12,6 +12,8 @@ import { errorHandler, notFound } from './middleware/errorHandler';
 import { requestLogger } from './middleware/logger';
 import { WebSocketService } from './services/websocketService';
 import { setDatabase } from './controllers/meetingController';
+import { setDatabase as setAnalyticsDatabase } from './controllers/analyticsController';
+import { setDatabase as setProfileDatabase } from './controllers/profileController';
 
 // Initialize Express app
 const app = express();
@@ -46,6 +48,8 @@ const websocketService = new WebSocketService(server);
 
 // Set database for controllers
 setDatabase(db);
+setAnalyticsDatabase(db);
+setProfileDatabase(db);
 
 // Security middleware
 app.use(helmet({

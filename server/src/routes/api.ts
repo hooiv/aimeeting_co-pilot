@@ -9,6 +9,7 @@ import * as authController from '@/controllers/authController';
 import * as userController from '@/controllers/userController';
 import * as integrationController from '@/controllers/integrationController';
 import * as analyticsController from '@/controllers/analyticsController';
+import * as profileController from '@/controllers/profileController';
 
 const router = Router();
 
@@ -32,6 +33,11 @@ router.post('/auth/logout', authenticateToken, authController.logout);
 router.post('/auth/refresh', authController.refreshToken);
 router.get('/auth/me', authenticateToken, authController.getProfile);
 router.put('/auth/profile', authenticateToken, authController.updateProfile);
+
+// Profile routes
+router.get('/profile', authenticateToken, profileController.getProfile);
+router.put('/profile', authenticateToken, profileController.updateProfile);
+router.post('/profile/avatar', authenticateToken, profileController.uploadAvatarMiddleware, profileController.uploadAvatar);
 router.post('/auth/forgot-password', authController.forgotPassword);
 router.post('/auth/reset-password', authController.resetPassword);
 
@@ -120,14 +126,14 @@ router.get('/search/transcripts', authenticateToken, meetingController.searchTra
 router.get('/search/users', authenticateToken, userController.searchUsers);
 
 // Notification routes
-router.get('/notifications', authenticateToken, userController.getNotifications);
-router.put('/notifications/:id/read', authenticateToken, validateUUID('id'), userController.markNotificationRead);
+router.get('/notifications', authenticateToken, profileController.getNotifications);
+router.put('/notifications/:id/read', authenticateToken, validateUUID('id'), profileController.markNotificationRead);
 router.delete('/notifications/:id', authenticateToken, validateUUID('id'), userController.deleteNotification);
-router.post('/notifications/mark-all-read', authenticateToken, userController.markAllNotificationsRead);
+router.post('/notifications/mark-all-read', authenticateToken, profileController.markAllNotificationsRead);
 
 // Settings routes
-router.get('/settings', authenticateToken, userController.getSettings);
-router.put('/settings', authenticateToken, userController.updateSettings);
+router.get('/settings', authenticateToken, profileController.getSettings);
+router.put('/settings', authenticateToken, profileController.updateSettings);
 router.get('/settings/organization', authenticateToken, requireRole(['admin']), userController.getOrganizationSettings);
 router.put('/settings/organization', authenticateToken, requireRole(['admin']), userController.updateOrganizationSettings);
 

@@ -60,6 +60,7 @@ export const apiSlice = createApi({
     'Settings',
     'Integration',
     'Notification',
+    'Recordings',
   ],
   endpoints: (builder) => ({
     // Auth endpoints
@@ -205,6 +206,175 @@ export const apiSlice = createApi({
       }),
       providesTags: ['Analytics'],
     }),
+    getDashboardData: builder.query({
+      query: () => '/analytics/dashboard',
+      providesTags: ['Analytics'],
+    }),
+    getLiveMeetingAnalytics: builder.query({
+      query: (meetingId) => `/analytics/meetings/${meetingId}/live`,
+      providesTags: (result, error, meetingId) => [{ type: 'Analytics', id: `live-${meetingId}` }],
+    }),
+    trackEvent: builder.mutation({
+      query: (eventData) => ({
+        url: '/analytics/events',
+        method: 'POST',
+        body: eventData,
+      }),
+    }),
+    getAdminStats: builder.query({
+      query: () => '/admin/stats',
+      providesTags: ['Analytics'],
+    }),
+    getSystemHealth: builder.query({
+      query: () => '/admin/system-health',
+      providesTags: ['Analytics'],
+    }),
+    exportUserAnalytics: builder.mutation({
+      query: (params = {}) => ({
+        url: '/export/analytics/user',
+        method: 'GET',
+        params,
+      }),
+    }),
+
+    // AI Insights endpoints
+    getAIInsights: builder.query({
+      query: (params = {}) => ({
+        url: '/ai/insights',
+        params,
+      }),
+      providesTags: ['Analytics'],
+    }),
+    generateInsights: builder.mutation({
+      query: (data) => ({
+        url: '/ai/insights/generate',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Analytics'],
+    }),
+    getSentimentTrends: builder.query({
+      query: (params = {}) => ({
+        url: '/ai/sentiment/trends',
+        params,
+      }),
+      providesTags: ['Analytics'],
+    }),
+    getTopicInsights: builder.query({
+      query: (params = {}) => ({
+        url: '/ai/topics/insights',
+        params,
+      }),
+      providesTags: ['Analytics'],
+    }),
+
+    // Recordings endpoints
+    getRecordings: builder.query({
+      query: (params = {}) => ({
+        url: '/recordings',
+        params,
+      }),
+      providesTags: ['Recordings'],
+    }),
+    getRecording: builder.query({
+      query: (id) => `/recordings/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Recordings', id }],
+    }),
+    uploadRecording: builder.mutation({
+      query: (formData) => ({
+        url: '/recordings/upload',
+        method: 'POST',
+        body: formData,
+      }),
+      invalidatesTags: ['Recordings'],
+    }),
+    deleteRecording: builder.mutation({
+      query: (id) => ({
+        url: `/recordings/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Recordings'],
+    }),
+    shareRecording: builder.mutation({
+      query: ({ id, shareData }) => ({
+        url: `/recordings/${id}/share`,
+        method: 'POST',
+        body: shareData,
+      }),
+    }),
+    getRecordingTranscript: builder.query({
+      query: (id) => `/recordings/${id}/transcript`,
+      providesTags: (result, error, id) => [{ type: 'Recordings', id: `transcript-${id}` }],
+    }),
+    getRecordingFolders: builder.query({
+      query: () => '/recordings/folders',
+      providesTags: ['Recordings'],
+    }),
+
+    // Meeting scheduling endpoints
+    createMeeting: builder.mutation({
+      query: (meetingData) => ({
+        url: '/meetings',
+        method: 'POST',
+        body: meetingData,
+      }),
+      invalidatesTags: ['Meeting'],
+    }),
+    updateMeeting: builder.mutation({
+      query: ({ id, ...meetingData }) => ({
+        url: `/meetings/${id}`,
+        method: 'PUT',
+        body: meetingData,
+      }),
+      invalidatesTags: ['Meeting'],
+    }),
+    deleteMeeting: builder.mutation({
+      query: (id) => ({
+        url: `/meetings/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Meeting'],
+    }),
+    joinMeeting: builder.mutation({
+      query: (id) => ({
+        url: `/meetings/${id}/join`,
+        method: 'POST',
+      }),
+    }),
+    leaveMeeting: builder.mutation({
+      query: (id) => ({
+        url: `/meetings/${id}/leave`,
+        method: 'POST',
+      }),
+    }),
+
+    // Help and support endpoints
+    getHelpArticles: builder.query({
+      query: (params = {}) => ({
+        url: '/help/articles',
+        params,
+      }),
+    }),
+    searchHelp: builder.query({
+      query: (query) => ({
+        url: '/help/search',
+        params: { q: query },
+      }),
+    }),
+    submitFeedback: builder.mutation({
+      query: (feedbackData) => ({
+        url: '/support/feedback',
+        method: 'POST',
+        body: feedbackData,
+      }),
+    }),
+    contactSupport: builder.mutation({
+      query: (contactData) => ({
+        url: '/support/contact',
+        method: 'POST',
+        body: contactData,
+      }),
+    }),
 
     // Action Items endpoints
     getActionItems: builder.query({
@@ -238,6 +408,28 @@ export const apiSlice = createApi({
       invalidatesTags: ['ActionItem'],
     }),
 
+    // Profile endpoints
+    getProfile: builder.query({
+      query: () => '/profile',
+      providesTags: ['User'],
+    }),
+    updateProfile: builder.mutation({
+      query: (profileData) => ({
+        url: '/profile',
+        method: 'PUT',
+        body: profileData,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    uploadAvatar: builder.mutation({
+      query: (formData) => ({
+        url: '/profile/avatar',
+        method: 'POST',
+        body: formData,
+      }),
+      invalidatesTags: ['User'],
+    }),
+
     // Settings endpoints
     getSettings: builder.query({
       query: () => '/settings',
@@ -246,7 +438,7 @@ export const apiSlice = createApi({
     updateSettings: builder.mutation({
       query: (settings) => ({
         url: '/settings',
-        method: 'PATCH',
+        method: 'PUT',
         body: settings,
       }),
       invalidatesTags: ['Settings'],
@@ -319,10 +511,39 @@ export const {
   useGetMeetingAnalyticsQuery,
   useGetUserAnalyticsQuery,
   useGetOrganizationAnalyticsQuery,
+  useGetDashboardDataQuery,
+  useGetLiveMeetingAnalyticsQuery,
+  useTrackEventMutation,
+  useGetAdminStatsQuery,
+  useGetSystemHealthQuery,
+  useExportUserAnalyticsMutation,
+  useGetAIInsightsQuery,
+  useGenerateInsightsMutation,
+  useGetSentimentTrendsQuery,
+  useGetTopicInsightsQuery,
+  useGetRecordingsQuery,
+  useGetRecordingQuery,
+  useUploadRecordingMutation,
+  useDeleteRecordingMutation,
+  useShareRecordingMutation,
+  useGetRecordingTranscriptQuery,
+  useGetRecordingFoldersQuery,
+  useCreateMeetingMutation,
+  useUpdateMeetingMutation,
+  useDeleteMeetingMutation,
+  useJoinMeetingMutation,
+  useLeaveMeetingMutation,
+  useGetHelpArticlesQuery,
+  useSearchHelpQuery,
+  useSubmitFeedbackMutation,
+  useContactSupportMutation,
   useGetActionItemsQuery,
   useCreateActionItemMutation,
   useUpdateActionItemMutation,
   useDeleteActionItemMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useUploadAvatarMutation,
   useGetSettingsQuery,
   useUpdateSettingsMutation,
   useGetIntegrationsQuery,
